@@ -96,15 +96,16 @@ mat4.multiply(modelMatrix, translationMatrix, modelMatrix)
 const viewMatrix = mat4.create()
 const projectionMatrix = mat4.create()
 
-const eye = [3, 3, 5]
+const eye = [0, 0, 0]
 const center = [0, 0, 0]
 const up = [0, 1, 0]
 mat4.lookAt(viewMatrix, eye, center, up)
 
 const fov = glMatrix.toRadian(45)
 const aspect = canvas.width / canvas.height
-const near = 0.1
-const far = 10
+
+let near = 0.1
+let far = 10
 mat4.perspective(projectionMatrix, fov, aspect, near, far)
 
 // #️⃣ Establecemos el programa a usar, sus conexiónes atributo-buffer e indices a usar (guardado en el VAO)
@@ -130,6 +131,13 @@ gl.uniformMatrix4fv(projectionMatrixLocation, false, projectionMatrix)
 
 function render(currentTime) {
   // Limpiamos el canvas y dibujamos
+  mat4.lookAt(viewMatrix, eye, center, up)
+  gl.uniformMatrix4fv(viewMatrixLocation, false, viewMatrix)
+  mat4.perspective(projectionMatrix, fov, aspect, near, far)
+  
+  gl.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix)
+  gl.uniformMatrix4fv(projectionMatrixLocation, false, projectionMatrix)
+
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
   gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0)
 
@@ -139,3 +147,69 @@ function render(currentTime) {
 
 // Nuestro primer frame
 requestAnimationFrame(render)
+
+
+window.addEventListener("keydown", event =>{ 
+    if(event.keyCode == 87){//W
+      eye[2]=eye[2]+0.1
+    }
+  } )
+
+  window.addEventListener("keydown", event =>{ 
+    if(event.keyCode == 83){//S
+      eye[2]=eye[2]-0.1  
+    }
+  } )
+
+  window.addEventListener("keydown", event =>{ 
+    if(event.keyCode == 68){//D
+      eye[0]=eye[0]+0.1  
+    }
+  } )
+
+  window.addEventListener("keydown", event =>{ 
+    if(event.keyCode == 65){//A
+      eye[0]=eye[0]-0.1  
+    }
+  } )
+
+
+  window.addEventListener("keydown", event =>{ 
+    if(event.keyCode == 38){//UP
+      center[1]=center[1]+0.1  
+    }
+  } )
+
+  window.addEventListener("keydown", event =>{ 
+    if(event.keyCode == 40){//DOWN
+      center[1]=center[1]-0.1  
+    }
+  } )
+
+  window.addEventListener("keydown", event =>{ 
+    if(event.keyCode == 90){//Z
+      near=near-0.1 
+    
+    }
+  } )
+
+  window.addEventListener("keydown", event =>{ 
+    if(event.keyCode == 88){//X
+      near=near+0.1  
+      
+    }
+  } )
+
+  window.addEventListener("keydown", event =>{ 
+    if(event.keyCode == 78){//N
+      far=far-0.1 
+    
+    }
+  } )
+
+  window.addEventListener("keydown", event =>{ 
+    if(event.keyCode == 77){//M
+      far=far+0.1 
+    
+    }
+  } )
